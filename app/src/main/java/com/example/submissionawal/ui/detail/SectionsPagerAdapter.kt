@@ -1,4 +1,4 @@
-package com.example.submissionawal
+package com.example.submissionawal.ui.detail
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -1,5 +1,6 @@
-package com.example.submissionawal
+package com.example.submissionawal.data.remote.retrofit
 
+import com.example.submissionawal.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

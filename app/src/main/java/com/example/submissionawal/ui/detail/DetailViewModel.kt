@@ -1,16 +1,24 @@
-package com.example.submissionawal
+package com.example.submissionawal.ui.detail
 
+import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.submissionawal.data.local.entity.FavoriteUser
+import com.example.submissionawal.data.remote.response.DetailUserResponse
+import com.example.submissionawal.data.remote.retrofit.ApiConfig
+import com.example.submissionawal.repository.FavoriteRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(application: Application) : ViewModel() {
 
     private val _userDetail = MutableLiveData<DetailUserResponse>()
     val userDetail: LiveData<DetailUserResponse> = _userDetail
@@ -19,6 +27,21 @@ class DetailViewModel : ViewModel() {
     val isLoading: LiveData<Boolean> = _isLoading
 
     private var lastUsername: String? = null
+
+    private val mfavoriteRepository: FavoriteRepository = FavoriteRepository(application)
+
+    fun getFavoriteUser(username: String): LiveData<FavoriteUser> =
+        mfavoriteRepository.getFavoriteUser(username)
+
+    fun insert(favoriteUser: FavoriteUser) {
+        CoroutineScope(Dispatchers.IO).launch {
+            mfavoriteRepository.insert(favoriteUser)
+        }
+    }
+
+    fun delete(favoriteUser: FavoriteUser) {
+        mfavoriteRepository.delete(favoriteUser)
+    }
 
 
     fun findDetailUser(username: String) {

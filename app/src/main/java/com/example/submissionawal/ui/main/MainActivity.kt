@@ -1,23 +1,40 @@
-package com.example.submissionawal
+package com.example.submissionawal.ui.main
 
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.submissionawal.R
+import com.example.submissionawal.data.local.datastore.SettingPreferences
+import com.example.submissionawal.data.remote.response.User
 import com.example.submissionawal.databinding.ActivityMainBinding
-import androidx.appcompat.widget.SearchView
+import com.example.submissionawal.helper.ViewModelFactory
+import com.example.submissionawal.ui.adapter.ListUserAdapter
+import com.example.submissionawal.ui.detail.DetailActivity
+import com.example.submissionawal.ui.favorite.FavoriteActivity
+import com.example.submissionawal.ui.setting.SettingActivity
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
+    private val mainViewModel by viewModels<MainViewModel> {
+        ViewModelFactory.getInstance(application, SettingPreferences.getInstance(dataStore))
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +43,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.show()
+        supportActionBar?.setTitle(R.string.app_name)
+
+        mainViewModel.getThemeSettings().observe(
+            this
+        ) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         val layoutManager = LinearLayoutManager(this)
         binding.rvUser.layoutManager = layoutManager
@@ -46,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.option_menu, menu)
 
+
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu.findItem(R.id.search).actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
@@ -63,6 +92,23 @@ class MainActivity : AppCompatActivity() {
 
         })
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite) {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
+
+        if (item.itemId == R.id.setting) {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        return super.onOptionsItemSelected(item)
+
+
     }
 
     private fun setUserData(user: List<User>) {

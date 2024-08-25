@@ -1,5 +1,8 @@
-package com.example.submissionawal
+package com.example.submissionawal.data.remote.retrofit
 
+import com.example.submissionawal.data.remote.response.DetailUserResponse
+import com.example.submissionawal.data.remote.response.User
+import com.example.submissionawal.data.remote.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.*
 
