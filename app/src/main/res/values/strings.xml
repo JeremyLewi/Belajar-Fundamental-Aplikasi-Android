@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Github User</string>
+    <string name="search_hint">Find User</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+
+    <string name="tab_text_1">FOLLOWERS</string>
+    <string name="tab_text_2">FOLLOWING</string>
+    <string name="search">search</string>
+</resources>
